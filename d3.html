@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<style>
+body{
+	  font-size: 26px;
+	  padding: 20px;
+}
+	svg{
+	  background-color: #e9e9e9;
+	  border: 10px;
+	  width: 300px;
+	  height: 300px;
+	}
+</style>
+
+<body>
+<!-- <svg>
+	<g class="layer" transform="translate(60,10)">
+		<circle r="5" cx="0" cy="105" />
+		<circle r="5" cx="90" cy="90" />
+		<circle r="5" cx="180" cy="60" />
+		<circle r="5" cx="270" cy="0" />
+
+		<g class="y axis">
+			<path d="M0 0 L 0 120" stroke="black"/>
+			<path d="M0 120 L 270 120" stroke="black"/>
+		</g>
+	</g>
+</svg> -->
+
+<svg>
+	< rect />
+	< rect />
+	< rect />
+	< rect />
+</svg>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+var numbers = [ 5, 4, 10, 1],
+	data = [
+		{ date: '2014-01-01', amount: 10 },
+		{ date: '2014-02-01', amount: 20 },
+		{ date: '2014-03-01', amount: 40 },
+		{ date: '2014-04-01', amount: 80 },
+	];
+
+output_0 = d3.min(numbers)
+
+output_1 = d3.max(data, function(d,i) { return d.amount});
+
+output_2 = d3.extent(numbers);
+
+
+
+var y = d3.scaleLinear()
+	.domain([0, 80])
+	.range([200,0]);
+
+// or using extent
+// y.domain=d3.extent(data, function(d) {return d.amount});
+
+// var x = d3.scaleTime()
+// 	.domain([
+// 		new Date(Date.parse('2014-01-01')),
+// 		new Date(Date.parse('2014-04-01'))
+// 		])
+// 	.range([0, 300]);
+
+// var xAxis = d3.axisBottom(x)
+// 	.ticks(4);
+
+// var svg = d3.select('body')
+// 	.append('svg') // creates an <svg> elem
+// 		.attr('width', 300) // set dims
+// 		.attr('height', 150);
+
+// svg.append('g') // create a <g> elem
+// 	.attr('class', 'x axis') // spec. class
+// 	.call(xAxis); // axis does its thing
+
+var sales = [
+	{ product: 'Hoodie',  count: 7},
+	{ product: 'Jacket',  count: 6},
+	{ product: 'Snuggie', count: 9},
+];
+
+var svg = d3.select('svg');
+
+var rects = svg.selectAll('rect')
+	.data(sales);
+
+var newRects = rects.enter();
+
+var maxCount = d3.max(sales, function(d, i) { return d.count;
+});
+
+var x = d3.scaleLinear()
+	.range([0, 300])
+	.domain([0, maxCount]);
+
+var y = d3.scaleOrdinal()
+	.rangeRoundBands([0, 75])
+	.domain(sales.map(function(d,i) { return d.product;
+	}));
+
+newRects.append('rect')
+	.attr('x', x(0))
+	.attr('y', function(d,i){ return y(d.product);
+	})
+	.attr('height', y.rangeBand())
+	.attr('width', function(d, i) { return x(d.count);
+	});
+
+
+</script>
+
+
+
+
+</body>
+
+
+
+
+
+<html>

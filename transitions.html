@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+p {
+  text-indent: 15px;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+</style>
+<body>
+<p>Lorem Ipsum stole my karma.</p>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+
+d3.select("body").transition()
+  .delay(500)
+  .each("start", function() { d3.select(this).style("color","green"); })
+  .style("color", "red");
+
+var body = d3.select("body")
+svg = body.append("svg")
+    .attr("height", "600")
+    .attr("width", "900")
+    .style("background-color","light gray")
+  .selectAll("circle")
+    .data([100,200,300])
+  .enter().append("circle")
+    .attr("r","10")
+    .attr("cx", function(d) {return d; })
+    .attr("cy",20);
+
+
+
+d3.selectAll("circle")
+  .transition()
+  .delay(800)
+  .attr("cx",function(d) {return d*2;})
+  .transition()
+  .attr("cy",function(d) {return d*1.5;});
+
+
+</script>
+</body>

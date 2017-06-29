@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Chord Visualizer</title>
+	<meta charset="utf-8" />
+	
+</head>
+<body>
+<style>
+
+.chart div {
+  font: 50px courier;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 0 10px 0;
+  color: black;
+  border: .5px solid;
+}
+
+</style>
+<div>
+<div class="chart"></div>
+</div>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+
+var chord = {
+	4: 0,
+	1: 10,
+	5: 20,
+	2: 30,
+	6: 40,
+	3: 50,
+}
+
+// var changes = ["I","vi","IV","V"]
+// var changes = [4,1,2,2,4,1,5,5] // Tiny Dancer
+// var changes = ["I","IV","V","IV"]; // The Joker
+var verse = [6,3,5,2,4,1,2,3];
+var chorus = [4,1,2,6,4,1,2,3]; // Hotel California
+
+changes = [].concat(verse,verse,chorus,chorus);
+var data = changes.map(function(x) { return chord[x]});
+
+var x = d3.scaleLinear()
+	.domain([0, 50])
+	.range([0,510])
+
+var color = d3.scaleLinear()
+	.domain([0, d3.max(data)])
+	.range(["aqua","darkviolet"]);
+
+d3.select(".chart")
+	.selectAll("div")
+		.data(data)
+	.enter().append("div")
+		.style("width", "100px")
+		.style("height", "50px")
+		.style("margin-left", function(d) { return x(d) + 300 + "px";})
+		.style("background-color", function(d) { return color(d); })
+		.text(function(d,i) {return changes[i];});
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

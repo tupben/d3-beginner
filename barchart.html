@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Bar Chart</title>
+	<meta charset="utf-8" />
+	
+</head>
+<body>
+<style>
+
+
+.chart div {
+  font: 40px courier;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px 3px;
+
+  margin: 10px;
+  color: white;
+}
+</style>
+<div>
+<div class="chart"></div>
+</div>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var data = [4, 8, 15, 16, 23, 42];
+
+var x = d3.scaleLinear()
+    .domain([0, d3.max(data)])
+    .range([0, 420]);
+    
+d3.select(".chart")
+  .selectAll("div")
+    .data(data)
+  .enter().append("div")
+    .style("width", function(d) { return x(d) + "px"; })
+    .text(function(d) { return d; });
+
+
+
+
+
+// var div = document.createElement("div");
+// div.innerHTML = "Hello, World!";
+// document.body.appendChild(div);
+
+// var tutu = d3.select("body");
+// var waga = tutu.append("div");
+// waga.html("Hello, world!");
+
+// var section = d3.selectAll("section");
+// var div = section.append("div");
+// div.html("Hello, wworld!");
+
+// var body = d3.select("body");
+// body.style("color","yellow");
+// body.style("background-color", "black");
+
+// d3.select("body")
+// 	.style("color", "green")
+// 	.style("background-color","lightblue")
+
+// d3.selectAll("section")
+// 		.attr("class","special")
+// 	.append("div")
+// 		.html("Bello, World!");
+
+// var section = d3.selectAll("section");
+
+// section.append("div")
+// 	.html("First!");
+
+// section.append("div")
+// 	.html("Second.");
+
+
+// var chart = d3.select(".chart");
+// var bar = chart.selectAll("div");
+// var barUpdate = bar.data(data);
+// var barEnter = barUpdate.enter().append("div");
+
+// barEnter.style("width",function(d) { return d * 10 + "px"; });
+// barEnter.text(function(d) {return d;});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

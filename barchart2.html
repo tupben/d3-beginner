@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Bar Chart II</title>
+	<meta charset="utf-8" />
+	
+</head>
+<body>
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+</style>
+
+<svg class="chart"><</svg>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+// var data = [4, 8, 15, 16, 23, 42];
+
+var width = 420,
+    barHeight = 20;
+
+// normalize display
+var x = d3.scaleLinear()
+    .range([0, width]);
+
+// make the chart
+var chart = d3.select(".chart")
+    .attr("width", width)
+
+
+d3.tsv("data2.tsv", type, function(error, data) {
+  x.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  chart.attr("height", barHeight * data.length);
+
+console.log(data);
+
+// add divs called "g", move down based on index
+var bar = chart.selectAll("g")
+    .data(data)
+  .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+// add a rect-div inside g-div.
+bar.append("rect")
+    .attr("width", function(d) { return x(d.value);})
+    .attr("height", barHeight - 1);
+
+// add text to the g-div
+bar.append("text")
+    .attr("x", function(d) { return x(d.value) - 3; })
+    .attr("y", barHeight / 2)
+    .attr("dy", ".35em")
+    .text(function(d) { return d.value; });
+});
+
+function type(d) {
+  d.value = +d.value; // coerce to number ??
+  return d
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
