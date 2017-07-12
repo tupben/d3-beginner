@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>test</title>
+<style>
+
+.chart {
+  background-color: lightgrey;
+  width: 400px;
+  height: 400px;
+}
+
+.chart circle {
+  fill: steelblue;
+}
+
+
+
+</style>
+</head>
+<body>
+<svg class="chart">
+  <circle/>
+</svg>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data = [100,200,300]
+
+var svg = d3.select("svg")
+
+var circle = svg.selectAll("circle")
+  .data(data)
+  .enter()
+  .append("circle")
+    .attr("r",20)
+    .attr("cy",100)
+    .attr("cx",0)
+    .style("fill", "red")
+
+var delay = 1000;
+
+circle
+    .transition()
+    .duration(delay)
+    .delay(function (d, i) {return i * delay;})
+    .attr("cx", function (d) {return d;});
+
+
+
+
+</script>
+</body>
+</html>

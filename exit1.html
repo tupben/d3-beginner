@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>Test</title>
+<style>
+
+svg {
+  display: inline-block;
+  width: 800px;
+  height: 200px;
+}
+
+line {
+  stroke: black;
+
+}
+
+circle {
+  fill: steelblue;
+  opacity: .7;
+}
+
+</style>
+</head>
+<body>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+// var margin = {top:20, right:20, bottom:20, left:20},
+//     width = 800 - margin.right - margin.left,
+//     height = 200 - margin.top - margin.bottom;
+
+// var chart = d3.select(".chart")
+//   .attr("width", width + margin.right + margin.left)
+//   .attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+//     .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+var data1 = [20,30,50,10,90],
+  data2 = [90,15,20,25],
+  xBuffer = 100,
+  yBuffer = 100,
+  lineLength = 400,
+  dataIndex = 1
+
+var y = d3.scale.linear()
+  .domain([0,5])
+  .range([xBuffer,xBuffer+lineLength])
+
+
+var svgDoc = d3.select("body").append("svg")
+
+svgDoc.append("line")
+  .attr("x1",xBuffer)
+  .attr("y1",yBuffer)
+  .attr("x2",xBuffer+lineLength)
+  .attr("y2",yBuffer)
+
+svgDoc.append("g").selectAll("circle")
+  .data(eval("data" + dataIndex))
+  .enter()
+  .append("circle")
+    .attr("cx", function(d,i) { return y(i) })
+    .attr("cy", yBuffer)
+    .attr("r",function(d) { return d })
+
+d3.select("body").append("button")
+  .text("click me")
+  .on("click", function(){
+
+    dataIndex = dataIndex%2 + 1
+
+    var circle = svgDoc.select("g").selectAll("circle")
+      .data(eval("data"+dataIndex))
+    circle.exit()
+      .transition()
+        .attr("r",0)
+        .remove()
+    circle.enter().append("circle")
+      .attr("r",0);
+
+    circle.transition()
+      .duration(500)
+      .attr("cx", function(d,i) { return y(i) })
+      .attr("cy", yBuffer)
+      .attr("r",function(d) { return d })
+
+})
+
+</script>
+</body>
+</html>

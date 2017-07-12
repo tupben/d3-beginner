@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>Music 3</title>
+<style>
+
+.chart {
+  background-color: lightgrey;
+}
+
+.chart circle {
+  fill: steelblue;
+}
+
+.chart rect {
+  fill: steelblue;
+  width: 20px;
+  height: 20px;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+
+</style>
+</head>
+<body>
+<svg class="chart"></svg>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+var margin = {top:20, right:20, bottom:20, left:20},
+    width = 400 - margin.right - margin.left,
+    height = 400 - margin.top - margin.bottom;
+
+var chart = d3.select(".chart")
+  .attr("width", width + margin.right + margin.left)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+
+
+
+
+
+////
+////
+d3.tsv("music.tsv", type, function(error, data) {
+
+var x = d3.scale.ordinal()
+  .domain([4,1,5,2,6])
+  .rangeBands([0,width]);
+
+var y = d3.scale.linear()
+  .domain([0,data.length - 1])
+  .range([0,height]);
+
+
+
+var circle = chart.selectAll("circle")
+    .data(data)
+  .enter().append("circle")
+    .attr("r","15px")
+    .attr("cy", function(d,i) {return y(i); })
+    .attr("cx", 400)
+    .attr("name",function(d) { return d.value })
+
+
+
+
+circle.transition()
+    .delay(function(d,i) { return 500*i; })
+    .duration(500)
+    .attrTween("cx", function(d,i) { return d3.interpolate(400,x(d.value) + x.rangeBand()/2) })
+
+
+
+})
+////
+////
+
+// helps turn strings into numbers
+function type(d) {
+  d.value = +d.value;
+  return d;
+}
+
+
+
+</script>
+</body>
+</html>

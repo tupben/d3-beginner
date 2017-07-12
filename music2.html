@@ -3,26 +3,14 @@
 <head>
 <style>
 
-/*.container {
-	border-right: solid steelblue;
-	border-left: solid steelblue;
-	display: inline-block;
-}*/
 
 svg{
-
 	background-color: lightgray;
 }
 
 .chart circle {
 	fill: steelblue;
 }
-
-g {
-	background-color: red;
-	fill: red;
-}
-
 </style>
 </head>
 <body>
@@ -49,15 +37,10 @@ var chart = d3.select(".chart")
 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-
-
-
-
+////////////////////
+////////////////////
 
 d3.tsv("music.tsv", type, function(error, data) {
-
-////////////////////
-////////////////////
 
 var x = d3.scale.ordinal()
 	.domain([4,1,5,2])

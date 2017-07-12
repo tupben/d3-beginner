@@ -1,0 +1,45 @@
+{
+"Broom People":
+	 {"name"  :	"Broom People",
+		"tempo" : 3110,
+		"verse" :	[1,3,[4,5],1,
+							 1,6,4,1,
+							 1,3,4,5,
+							 4,1,4,1,
+							 4,6,[4,5],1,
+							 4,1,4,1,
+							 4,1,4,1],
+		"structure":["verse","verse"]
+	},
+
+"Octopus's Garden":
+	{"name"   : "Octopus's Garden",
+	 "tempo"  : 1000,
+	 "verse" : [1,6,4,5,
+	 						 1,1,6,6,
+	 						 4,4,5,5,
+	 						 1,1,6,6,
+	 						 4,4,5,5,
+	 						 6,6,6,6,
+	 						 4,4,5,5,
+	 						 1,1,6,6,
+	 						 4,5,1,1,
+	 						 1,1,6,6,
+	 						 4,4,5,5,
+	 						 1,1,6,6,
+	 						 4,4,5,5,
+	 						 6,6,6,6,
+	 						 4,4,5,5,
+	 						 1,1,6,6,
+	 						 4,5,1,1],
+	 "structure":["verse","verse"]
+	},
+
+"Test":
+	{"name"   : "Test",
+	 "tempo"  : 1000,
+	 "verse"  : [1,2,3,4,5],
+	 "chorus" : [5,5,5,5],
+	 "structure": ["verse","verse","chorus","verse","verse","chorus"]
+	}
+}

@@ -1,48 +1,64 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<html>
+<head>
+<title>Music 5</title>
+</head>
 <style>
 
-p {
-  text-indent: 15px;
-  font-size: 50px;
-  font-weight: bold;
+svg {
+	background-color: lightgray;
 }
+
+rect {
+	fill: steelblue;
+	height: 50px;
+	width: 50px;
+}
+
 
 </style>
 <body>
-<p>Lorem Ipsum stole my karma.</p>
-
+<div id="three3"></div>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script>
 
 
+var data = [1,2,3,4]
+	 u = 1000
 
-d3.select("body").transition()
-  .delay(500)
-  .each("start", function() { d3.select(this).style("color","green"); })
-  .style("color", "red");
+var svg = d3.select("body").append("svg")
+  .attr("width", 400)
+  .attr("height",400)
 
-var body = d3.select("body")
-svg = body.append("svg")
-    .attr("height", "600")
-    .attr("width", "900")
-    .style("background-color","light gray")
-  .selectAll("circle")
-    .data([100,200,300])
-  .enter().append("circle")
-    .attr("r","10")
-    .attr("cx", function(d) {return d; })
-    .attr("cy",20);
+
+var panel = svg.selectAll("rect")
+    .data(data)
+  .enter().append("rect")
+  	.attr("x",function(d,i) {return i*100})
+  	.attr("y",0)
+  	.attr("id",function(d,i) {return "id" + i})
 
 
 
-d3.selectAll("circle")
-  .transition()
-  .delay(800)
-  .attr("cx",function(d) {return d*2;})
-  .transition()
-  .attr("cy",function(d) {return d*1.5;});
+function blink() {
+
+panel
+		.attr("opacity",1)
+	.transition()
+		.delay(function(d,i) {return i*u})
+		.attr("opacity", 0.5)
+	.transition()
+		.duration(1000)
+		.attr("opacity",1)
+	setTimeout(function() {blink()},u*4)
+}
+
+
+blink()
+
 
 
 </script>
 </body>
+</html>

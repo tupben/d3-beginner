@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>Music 5</title>
+</head>
+<style>
+
+svg {
+	background-color: lightgray;
+}
+
+line {
+	stroke-width: 1;
+	stroke: white;
+	fill: none;
+}
+
+rect {
+	stroke-width:3;
+	stroke:white;
+}
+
+.title {
+	text-align: center;
+	font-size: 60px;
+	font-family: "Palatino", serif;
+}
+
+</style>
+<body>
+<div class="title"></div>
+<div class="container"></div>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+d3.json("data_music5.json", function(songs) {
+
+var data = prepare(songs["Broom People"])
+
+
+var margin = {top:20, right:20, bottom:20, left:20},
+    height = 420,
+    width = height * 2 / 3,
+    chart_width = width * 4,
+    rect_xy = height / 6 - 5;
+
+var x = d3.scale.linear()
+	.domain([0,3+1])
+	.range([0,width])
+
+var y = d3.scale.ordinal()
+	.domain([3,6,2,5,1,4])
+	// .domain([1,2,3,4,5,6])
+	.rangeBands([height,0])
+
+var color = { 1:"steelblue",
+							2:"orange",
+							3:"darkorange",
+							4:"lightblue",
+							5:"blue",
+							6:"darkred"
+}
+
+var title = d3.select("body").append("div").append("h1")
+	.attr("class","title")
+	.html(data.name)
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width * 4)// + margin.right + margin.left)
+  .attr("height", height + margin.top + margin.bottom)
+  .style("display","block")
+  .style("margin","auto")
+  .append("g")
+    .attr("transform","translate(" + eval(width * 2) + "," + margin.top + ")")
+  .append("g")
+
+svg.transition()
+  	.duration(data.tempo * data.chords.length * 4)
+  	.attr("transform","translate(-" + data.chords.length * width + ",0)")
+  	.ease("linear");
+
+var panel = svg.selectAll(".panel")
+    .data(data.chords)
+  .enter().append("g")
+  	.attr("class","panel")
+  	.attr("id", function(d,i) {return "panel" + i})
+  	.attr("transform", function(d,i) {
+  		return "translate(" + i * width + ",0)"; })
+
+var line = panel.append("line")
+		.attr("x1",-2)
+		.attr("y1",0)
+		.attr("x2",-2)
+		.attr("y2",height)
+
+var chord = panel.selectAll("rect")
+		.data(function(d) {return d})
+		.enter()
+
+var rect = chord.append("rect")
+		.attr("width", function(d) {return rect_xy * d.duration; })
+		.attr("height", rect_xy)
+		.attr("rx",rect_xy/10)
+		.attr("ry",rect_xy/10)
+		.attr("x", function(d,i) {return x(d.beats)})
+		.attr("y", function(d) {return y(d.chord)})
+		.attr("fill", function(d) {return color[d.chord]})
+
+var text = chord.append("text")
+	.attr("x", function(d,i) {return x(d.beats) + (rect_xy * d.duration)/2})
+	.attr("y", function(d) {return y(d.chord) + rect_xy/2})
+	.attr("dy","0.35em")
+	.style("text-anchor","middle")
+	.style("font","40px sans-serif")
+	.text(function(d) {return d.chord; })
+
+
+var count = 0;
+setInterval(blink,data.tempo * 4);
+blink();
+
+function blink() {
+	let blinking = d3.select("#panel"+count)
+	// console.log(blinking.data());
+	blinking.selectAll("rect")
+		.transition()
+			.delay(function(d) {return data.tempo *d.beats})
+			.style("stroke", "yellow")
+			.style("stroke-width",7)
+		.transition()
+			.duration(function(d) {return d.duration * data.tempo})
+			.style("stroke","white")
+			.style("stroke-width",3)
+	count++;
+}
+
+
+function prepare(data){
+	let new_data = Object.assign({},data)
+	let new_chords = [];
+	new_data.chords=[];
+	for (a of new_data.structure) {
+		for (let i = 0; i < new_data[a].length; i += 4){
+			new_chords.push(new_data[a].slice(i,i+4));
+		};
+	};
+
+	for (a of new_chords) {
+		let new_panel = [];
+		let beats = 0;
+		for (b of a) {
+			if (typeof(b) === "number"){
+				new_panel.push({  chord:b,
+													duration:1,
+													beats: beats
+												});
+				beats += 1;
+			} else if (typeof(b) === "object") {
+					for (c of b) {
+						new_panel.push({  chord:c,
+															duration: 1 / b.length,
+															beats:beats
+															});
+						beats += 1 / b.length;
+					};
+			};
+		};
+		new_data.chords.push(new_panel);
+	};
+	return new_data;
+}
+
+
+}); // .json
+
+
+
+</script>
+</body>
+</html>
