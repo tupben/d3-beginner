@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+<title>Music 5</title>
+</head>
+<style>
+
+body{
+	background: white;
+}
+
+svg {
+	background-color: white;
+}
+
+line {
+	stroke-width: 1;
+	stroke: gray;
+	fill: none;
+}
+
+rect {
+	stroke-width:3;
+	stroke: white;
+	box-sizing: border-box;
+}
+
+input {
+	position: absolute;
+	bottom: 0%;
+	float:bottom;
+	width: 400px;
+	height: 100px;
+	cursor: pointer;
+	font-size: 34px;
+	background-color: transparent;
+	border: steelblue 2px solid;
+	margin: 10px 20px;
+}
+
+input:hover {
+	background-color: lightsteelblue;
+}
+
+.container {
+	overflow: hidden;
+}
+
+.title {
+	color: #333;
+	font-size: 60px;
+	text-align: center;
+	font-family: "Palatino", serif;
+}
+
+</style>
+<body>
+
+
+
+<audio id="audioElement">
+</audio>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+
+d3.json("chordData.json", function(songs) {
+
+d3.select("#audioElement")
+	.attr("src","I Got a Name - Jim Croce.mp3")
+	
+// var data = prepare(songs["Octopus's Garden"]);
+var data = prepare(songs["I Got a Name"]);
+data.playSong();
+
+
+var margin = {top:20, right:20, bottom:20, left:20},
+    height = 520,
+    width = height * 2 / 3,
+    chart_width = width * 4,
+    rect_xy = height / 6 - 5;
+		interval = 16*60*1000 / (data.bpm) // data.bpm
+		spacing = true
+		nameToggle = true
+
+var x = d3.scale.linear()
+	.domain([0,3+1])
+	.range([0,width])
+
+var y = d3.scale.ordinal()
+	// .domain([3,6,2,5,1,4])
+	.domain([1,2,3,4,5,6])
+	.rangeBands([height,0])
+
+var z = d3.scale.ordinal()
+	.domain([3,6,2,5,1,4])
+	// .domain([1,2,3,4,5,6])
+	.rangeBands([height,0])
+
+var l = d3.scale.ordinal()
+	.domain([1,2,3,4,5,6])
+	// .range([1,2,3,4,5,6])
+	.range(["C","Dm","Em","F","G","Am"])
+
+
+var color = { 1:"#3182bd",
+							2:"#fd8d3c",
+							3:"#fdd0a2",
+							4:"#6baed6",
+							5:"#c6dbef",
+							6:"#e6550d"
+}
+
+var spacingTypeButton = d3.select("body").append("input")
+	.attr("id","spacingType")
+	.attr("type","button")
+	.attr("value","scalar spacing")
+	.style("left","0%")
+	.on("click", function() {
+		spacingTypeButton
+			.attr("value",function(){
+				return spacing ? "5ths" : "scalar spacing"
+			})
+		d3.selectAll("rect")
+			// .transition()
+				.attr("y", function(d) {return spacing ? z(d.chord) : y(d.chord)})
+		d3.selectAll("text")
+			// .transition()
+				.attr("y", function(d) {return spacing ? z(d.chord) + rect_xy/2 : y(d.chord) + rect_xy/2})
+		spacing = !spacing
+	})
+
+var chordTypeButton = d3.select("body").append("input")
+	.attr("id","chordType")
+	.attr("type","button")
+	.attr("value","numbers")
+	.style("right","0%")
+	.on("click", function() {
+		console.log(nameToggle)
+		chordTypeButton
+			.attr("value", function(){
+				return nameToggle ? "letters" : "numbers"
+			})
+		d3.selectAll("text")
+			.text(function(d) {return nameToggle ? l(d.chord) : d.chord; })
+		nameToggle = !nameToggle
+	})
+
+
+var title = d3.select("body").append("div").append("div").attr("class","title").append("h1")
+	.attr("class","title")
+	.html(data.name)
+
+
+var svg = d3.select("body").append("div")
+		.attr("class","container")
+	.append("div")
+		.attr("class","inner")
+		.attr("background-color","lightgray")
+	  .style("width", width * 4 + "px")
+	  .attr("height", height + margin.top + margin.bottom)
+	  .style("margin","auto")
+	  .style("white-space","nowrap")
+	  .style("margin-left", width * 2 + "px")
+  .append("g")
+
+var iter = 1;
+scroll();
+setInterval(scroll,interval);
+
+function scroll(){
+	svg.transition()
+			.delay(function() { return data.delay > 0 ? data.delay : 0 })
+	  	.ease("linear")
+			.style("margin-left", -width * iter + "px")
+			.duration(interval)
+	iter += 1
+}
+
+var panel = svg.selectAll(".panel")
+    .data(data.chords)
+  .enter().append("svg")
+  	.attr("width",
+  		function(d) {
+  			return width * .25 * d3.sum(d, function(d){return d.duration;
+  			})
+  		})
+  	.attr("height",height)
+  	.attr("class","panel")
+  	.attr("display","inline-block")
+  	.attr("id", function(d,i) {return "panel" + i})
+  	.attr("beats",function(d) {return d3.sum(d, function(d){return d.duration; }) })
+
+var line = panel.append("line")
+		.attr("x1",0)
+		.attr("y1",0)
+		.attr("x2",0)
+		.attr("y2",height)
+
+var chord = panel.selectAll("g")
+			.data(function(d) {return d})
+		.enter()
+
+var rect = chord.append("rect")
+		.attr("width", function(d) {return rect_xy * d.duration; })
+		.attr("height", rect_xy)
+		.attr("rx",rect_xy/10)
+		.attr("ry",rect_xy/10)
+		.attr("x", function(d,i) {return x(d.beat_measure)})
+		.attr("y", function(d) {return y(d.chord)})
+		.attr("fill", function(d) {return color[d.chord]})
+		.attr("id", function(d) { return "chord" + d.beat_song	})
+
+
+var text = chord.append("text")
+	.attr("x", function(d,i) {return x(d.beat_measure) + (rect_xy * d.duration)/2})
+	.attr("y", function(d) {return y(d.chord) + rect_xy/2})
+	.attr("dy","0.35em")
+	.style("text-anchor","middle")
+	.style("font","40px sans-serif")
+	.text(function(d) {return d.chord; })
+
+blink();
+
+function blink() {
+	let blinking = d3.selectAll("rect")
+		.transition()
+			.delay(function(d) {return interval * d.beat_song / 4 + data.delay})
+			.style("stroke", "yellow")
+			.style("stroke-width",7)
+		.transition()
+			.duration(function(d) {return interval * d.duration / 4})
+			.style("stroke","white")
+			.style("stroke-width",3);
+}
+
+function prepare(data){
+	let new_data = Object.assign({},data)
+	let new_chords = [];
+	new_data.chords=[];
+	for (a of new_data.structure) {
+		for (let i = 0; i < new_data[a].length; i += 4){
+			new_chords.push(new_data[a].slice(i,i+4));
+		};
+	};
+	let beat_song = 0;
+	for (a of new_chords) {
+		let new_panel = [];
+		let beat_measure = 0;
+		for (b of a) {
+			if (typeof(b) === "number"){
+				new_panel.push({  chord:b,
+													duration:1,
+													beat_measure: beat_measure,
+													beat_song: beat_song
+												});
+				beat_measure += 1;
+				beat_song += 1;
+			} else if (typeof(b) === "object") {
+					for (c of b) {
+						new_panel.push({  chord:c,
+															duration: 0.5,
+															beat_measure:beat_measure,
+															beat_song: beat_song
+															});
+						beat_measure += 0.5;
+						beat_song += 0.5;
+					};
+			};
+		};
+		new_data.chords.push(new_panel);
+	};
+
+	new_data.playSong = function(){
+		var song = document.getElementById('audioElement')
+		console.log(data.delay);
+		console.log(data.source);
+
+	  // song.src=data.source;
+	  song.src=data.source;
+	  song.play();
+	}
+	return new_data;
+};
+
+
+
+}); // .json
+
+</script>
+</body>
+</html>
